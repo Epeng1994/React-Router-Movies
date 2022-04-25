@@ -1,8 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
-export default function MovieCard(props) {
+
+
+function MovieList(props) {
+  return (
+    <div className="movie-list">
+      {props.movies.map(movie => (
+        <MovieDetails key={movie.id} movie={movie} />
+      ))}
+    </div>
+  );
+}
+
+function MovieDetails(props) {
+  const { title, director, metascore,id } = props.movie;
+
+  return (
+    <Link to={`/movies/${id}`}>
+      <div className="movie-card">
+        <h2>{title}</h2>
+        <div className="movie-director">
+          Director: <em>{director}</em>
+        </div>
+        <div className="movie-metascore">
+          Metascore: <strong>{metascore}</strong>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+
+function MovieCard(props) {
   const [movie, setMovie] = useState();
 
   const {id} = useParams();
@@ -23,8 +54,9 @@ export default function MovieCard(props) {
     // the `id` changes... How could we do this?
   }, [id]);
 
-  // Uncomment this only when you have moved on to the stretch goals
-  // const saveMovie = evt => { }
+  const saveMovie = evt => {  
+    props.save(evt)
+  }
 
   if (!movie) {
     return <div>Loading movie information...</div>;
@@ -50,10 +82,10 @@ export default function MovieCard(props) {
           </div>
         )): null}
       </div>
-      <div className="save-button">Save</div>
+      <div className="save-button" onClick = {()=>saveMovie(id)}>Save</div>
     </div>
   );
 }
 
 
-export {MovieList, Movie}
+export {MovieList, MovieCard}
